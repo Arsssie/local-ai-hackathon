@@ -1,6 +1,7 @@
-import { View, Text, Image, ScrollView, StyleSheet } from "react-native";
+import { View, Text, ScrollView, StyleSheet } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { ScanResult } from "../ml/types";
+import DetectionImage from "../components/DetectionImage";
 import classes from "../data/classes.json";
 
 export default function ResultScreen() {
@@ -12,7 +13,7 @@ export default function ResultScreen() {
       style={styles.container}
       contentContainerStyle={{ padding: 16 }}
     >
-      <Image source={{ uri: result.imageUri }} style={styles.image} />
+      <DetectionImage uri={result.imageUri} detections={result.detections} />
 
       <View style={styles.badge}>
         <Text style={styles.badgeText}>
