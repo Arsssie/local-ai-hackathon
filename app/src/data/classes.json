@@ -1,35 +1,35 @@
 {
   "paper": {
-    "category": "Recyclable",
+    "category": "Recyclable · Blue bin",
     "color": "#2563EB",
     "tip": "Keep it dry and clean. Flatten boxes and sell to a junk shop.",
     "pesoPerKg": 3
   },
   "plastic": {
-    "category": "Recyclable / Residual",
+    "category": "Recyclable · Blue bin",
     "color": "#0891B2",
-    "tip": "Rinse bottles and containers and sell clean PET. Sachets and thin wrappers are residual: rinse, dry and bundle them.",
+    "tip": "Rinse bottles and containers and sell clean PET. Sachets and thin wrappers are usually residual: rinse, dry and bundle them.",
     "pesoPerKg": 8
   },
   "glass": {
-    "category": "Recyclable",
+    "category": "Recyclable · Blue bin",
     "color": "#7C3AED",
     "tip": "Rinse bottles and keep them whole. Wrap broken glass before throwing it away.",
     "pesoPerKg": 2
   },
   "metal": {
-    "category": "Recyclable",
+    "category": "Recyclable · Blue bin",
     "color": "#64748B",
     "tip": "Rinse cans and crush them to save space. Metals fetch the best price at junk shops.",
     "pesoPerKg": 20
   },
   "electronics": {
-    "category": "Special waste",
+    "category": "Hazardous · Red bin",
     "color": "#DC2626",
     "tip": "Do not throw in regular trash. Bring batteries and e-waste to a collection point."
   },
   "organic": {
-    "category": "Biodegradable",
+    "category": "Biodegradable · Green bin",
     "color": "#16A34A",
     "tip": "Food scraps and peels can be composted. Keep them separate from dry waste."
   }

@@ -1,25 +1,21 @@
 import { ScanResult } from "./types";
+import { fromBackend } from "./adapter";
+import sample from "../data/sample_response.json";
+
+// Set to false to go back to the mock (e.g. when running in Expo Go)
+const USE_REAL_MODEL = true;
 
 export async function detect(imageUri: string): Promise<ScanResult> {
+  if (USE_REAL_MODEL) {
+    const { detectOnnx } = require("./onnx");
+    return detectOnnx(imageUri);
+  }
+
   const start = Date.now();
-
-  // MOCK: replace with real on-device model inference later
   await new Promise((r) => setTimeout(r, 600));
-
   return {
     imageUri,
     inferenceMs: Date.now() - start,
-    detections: [
-      {
-        label: "plastic",
-        confidence: 0.91,
-        box: { x: 0.1, y: 0.2, width: 0.4, height: 0.5 },
-      },
-      {
-        label: "paper",
-        confidence: 0.74,
-        box: { x: 0.55, y: 0.3, width: 0.3, height: 0.4 },
-      },
-    ],
+    detections: fromBackend(sample as any),
   };
 }
