@@ -10,6 +10,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
 import { detect } from "../ml/detect";
+import { saveScan } from "../utils/storage";
 
 export default function ScanScreen() {
   const navigation = useNavigation<any>();
@@ -19,6 +20,7 @@ export default function ScanScreen() {
     setLoading(true);
     try {
       const result = await detect(uri);
+      await saveScan(result);
       navigation.navigate("Result", { result });
     } catch (e) {
       Alert.alert("Scan failed", "Please try again.");
