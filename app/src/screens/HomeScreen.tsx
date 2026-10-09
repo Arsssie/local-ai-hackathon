@@ -5,6 +5,8 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
+  Modal,
+  Pressable,
   StyleSheet,
 } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
@@ -13,10 +15,12 @@ import {
   ScanLine,
   Recycle,
   ChevronRight,
-  WifiOff,
   Leaf,
   Trash2,
   AlertTriangle,
+  X,
+  Check,
+  Lightbulb,
 } from "lucide-react-native";
 import { getHistory, HistoryItem } from "../utils/storage";
 import { isUnsure } from "../ml/confidence";
@@ -26,7 +30,6 @@ import AppHeader from "../components/AppHeader";
 const DARK_GREEN = "#1B6045";
 const LIGHT_GREEN = "#76C255";
 
-//changes to be followed here
 const CATEGORIES = [
   {
     title: "Biodegradable",
@@ -34,6 +37,15 @@ const CATEGORIES = [
     Icon: Leaf,
     bg: "#EFF6E6",
     fg: "#2F5D2A",
+    about: "Organic waste that breaks down naturally and can be composted.",
+    examples: [
+      "Food scraps",
+      "Fruit and vegetable peels",
+      "Leaves and grass clippings",
+      "Eggshells",
+      "Coffee grounds",
+    ],
+    tip: "Keep it separate from plastics so it can be composted.",
   },
   {
     title: "Recyclable",
@@ -41,6 +53,14 @@ const CATEGORIES = [
     Icon: Recycle,
     bg: "#E7F1FD",
     fg: "#1E4E8C",
+    about: "Materials that can be processed and made into new products.",
+    examples: [
+      "Paper and cardboard",
+      "Clean plastic bottles",
+      "Glass bottles and jars",
+      "Aluminum and tin cans",
+    ],
+    tip: "Rinse and dry items before putting them in the recycling bin.",
   },
   {
     title: "Residual",
@@ -48,6 +68,16 @@ const CATEGORIES = [
     Icon: Trash2,
     bg: "#EFEFEF",
     fg: "#111827",
+    about:
+      "Waste that can't be composted or recycled and usually ends up in a landfill.",
+    examples: [
+      "Used tissues",
+      "Snack wrappers and sachets",
+      "Styrofoam",
+      "Diapers and sanitary pads",
+      "Broken ceramics",
+    ],
+    tip: "Cut down on residual waste by choosing reusable items.",
   },
   {
     title: "Special Waste",
@@ -55,8 +85,19 @@ const CATEGORIES = [
     Icon: AlertTriangle,
     bg: "#FCEBE6",
     fg: "#8B2E1F",
+    about: "Hazardous or electronic waste that needs safe handling and disposal.",
+    examples: [
+      "Batteries",
+      "Old phones and electronics",
+      "Light bulbs",
+      "Paint and chemicals",
+      "Medical waste",
+    ],
+    tip: "Never put these in regular trash. Bring them to a proper drop-off point.",
   },
 ];
+
+type Category = (typeof CATEGORIES)[number];
 
 function isToday(ts: number) {
   return new Date(ts).toDateString() === new Date().toDateString();
@@ -65,12 +106,20 @@ function isToday(ts: number) {
 export default function HomeScreen() {
   const navigation = useNavigation<any>();
   const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [selected, setSelected] = useState<Category | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
       getHistory().then(setHistory);
     }, []),
   );
+
+  const openCategory = (c: Category) => {
+    setSelected(c);
+    setModalOpen(true);
+  };
+  const closeModal = () => setModalOpen(false);
 
   const today = history.filter((h) => isToday(h.timestamp));
   const itemsToday = today.reduce(
@@ -83,6 +132,71 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <AppHeader />
 
+      {/* Category details modal */}
+      <Modal
+        visible={modalOpen}
+        transparent
+        animationType="slide"
+        onRequestClose={closeModal}
+      >
+        <View style={styles.modalRoot}>
+          <Pressable style={styles.backdrop} onPress={closeModal} />
+
+          {selected && (
+            <View style={styles.sheet}>
+              <View style={styles.handle} />
+
+              {/* Header */}
+              <View style={styles.sheetHeader}>
+                <View style={[styles.sheetIcon, { backgroundColor: selected.bg }]}>
+                  <selected.Icon size={26} color={selected.fg} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.sheetTitle}>{selected.title}</Text>
+                  <Text style={styles.sheetSub}>{selected.sub}</Text>
+                </View>
+                <TouchableOpacity
+                  onPress={closeModal}
+                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                  style={styles.closeBtn}
+                >
+                  <X size={20} color="#6B7280" />
+                </TouchableOpacity>
+              </View>
+
+              <Text style={styles.sheetAbout}>{selected.about}</Text>
+
+              {/* Examples */}
+              <Text style={styles.sheetLabel}>What goes here</Text>
+              <View style={[styles.examples, { backgroundColor: selected.bg }]}>
+                {selected.examples.map((ex) => (
+                  <View key={ex} style={styles.exampleRow}>
+                    <Check size={16} color={selected.fg} />
+                    <Text style={[styles.exampleText, { color: selected.fg }]}>
+                      {ex}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+
+              {/* Tip */}
+              <View style={styles.tipBox}>
+                <Lightbulb size={18} color={DARK_GREEN} />
+                <Text style={styles.tipText}>{selected.tip}</Text>
+              </View>
+
+              <TouchableOpacity
+                style={[styles.gotItBtn, { backgroundColor: selected.fg }]}
+                activeOpacity={0.9}
+                onPress={closeModal}
+              >
+                <Text style={styles.gotItText}>Got it</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+      </Modal>
+
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
@@ -92,8 +206,6 @@ export default function HomeScreen() {
         <Text style={styles.helloSub}>
           Ready to make a little less waste today?
         </Text>
-
-      
 
         {/* Hero scan card */}
         <TouchableOpacity
@@ -117,12 +229,19 @@ export default function HomeScreen() {
         {/* Explore waste categories */}
         <Text style={styles.categoriesTitle}>Explore Waste Categories</Text>
         <View style={styles.categoriesGrid}>
-          {CATEGORIES.map(({ title, sub, Icon, bg, fg }) => (
-            <View key={title} style={[styles.categoryCard, { backgroundColor: bg }]}>
-              <Icon size={20} color={fg} />
-              <Text style={[styles.categoryTitle, { color: fg }]}>{title}</Text>
-              <Text style={[styles.categorySub, { color: fg }]}>{sub}</Text>
-            </View>
+          {CATEGORIES.map((c) => (
+            <TouchableOpacity
+              key={c.title}
+              activeOpacity={0.8}
+              onPress={() => openCategory(c)}
+              style={[styles.categoryCard, { backgroundColor: c.bg }]}
+            >
+              <c.Icon size={20} color={c.fg} />
+              <Text style={[styles.categoryTitle, { color: c.fg }]}>
+                {c.title}
+              </Text>
+              <Text style={[styles.categorySub, { color: c.fg }]}>{c.sub}</Text>
+            </TouchableOpacity>
           ))}
         </View>
 
@@ -200,19 +319,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 
-  badge: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    alignSelf: "flex-start",
-    backgroundColor: "#DCFCE7",
-    paddingHorizontal: 12,
-    paddingVertical: 7,
-    borderRadius: 20,
-    marginBottom: 20,
-  },
-  badgeText: { color: "#166534", fontWeight: "600", fontSize: 12 },
-
   hero: {
     backgroundColor: DARK_GREEN,
     borderRadius: 25,
@@ -247,6 +353,7 @@ const styles = StyleSheet.create({
   },
   heroBtnText: { color: DARK_GREEN, fontSize: 15, fontWeight: "700" },
 
+  // categories
   categoriesTitle: {
     fontSize: 16,
     fontWeight: "600",
@@ -270,6 +377,97 @@ const styles = StyleSheet.create({
   categoryTitle: { fontSize: 16, fontWeight: "600", marginTop: 10 },
   categorySub: { fontSize: 12, marginTop: 4, opacity: 0.75 },
 
+  // category modal
+  modalRoot: { flex: 1, justifyContent: "flex-end" },
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.4)",
+  },
+  sheet: {
+    backgroundColor: "#fff",
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    paddingHorizontal: 24,
+    paddingTop: 12,
+    paddingBottom: 32,
+  },
+  handle: {
+    alignSelf: "center",
+    width: 40,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "#D1D5DB",
+    marginBottom: 18,
+  },
+  sheetHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    marginBottom: 14,
+  },
+  sheetIcon: {
+    width: 52,
+    height: 52,
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  sheetTitle: { fontSize: 22, fontWeight: "800", color: "#111827" },
+  sheetSub: { fontSize: 13, color: "#6B7280", marginTop: 2 },
+  closeBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "#F3F4F6",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  sheetAbout: {
+    fontSize: 15,
+    lineHeight: 22,
+    color: "#4B5563",
+    marginBottom: 18,
+  },
+  sheetLabel: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#6B7280",
+    textTransform: "uppercase",
+    letterSpacing: 0.6,
+    marginBottom: 8,
+  },
+  examples: {
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    marginBottom: 14,
+  },
+  exampleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    paddingVertical: 7,
+  },
+  exampleText: { fontSize: 15, fontWeight: "500" },
+  tipBox: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 10,
+    backgroundColor: "#F3F8F4",
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 20,
+  },
+  tipText: { flex: 1, fontSize: 14, lineHeight: 20, color: "#374151" },
+  gotItBtn: {
+    height: 52,
+    borderRadius: 26,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  gotItText: { color: "#fff", fontSize: 16, fontWeight: "700" },
+
+  // stats
   statsRow: { flexDirection: "row", gap: 12 },
   statBox: {
     flex: 1,

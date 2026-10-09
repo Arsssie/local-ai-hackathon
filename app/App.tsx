@@ -17,6 +17,7 @@ import ScanScreen from "./src/screens/ScanScreen";
 import LeaderboardScreen from "./src/screens/LeaderboardScreen";
 import HistoryScreen from "./src/screens/HistoryScreen";
 import ResultScreen from "./src/screens/ResultScreen";
+import IntroScreen from "./src/screens/IntroScreen";
 
 const DARK_GREEN = "#1B6045";
 const TAB_ICON_SIZE = 20; 
@@ -77,11 +78,16 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Login">
+        <Stack.Navigator initialRouteName="Intro">
+          <Stack.Screen
+            name="Intro"
+            component={IntroScreen}
+            options={{ headerShown: false }}
+          />
           <Stack.Screen
             name="Login"
             component={LoginScreen}
-            options={{ headerShown: false }}
+            options={{ headerShown: false, animation: "fade" }}
           />
           <Stack.Screen
             name="ForgotPassword"
