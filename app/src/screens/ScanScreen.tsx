@@ -23,6 +23,7 @@ export default function ScanScreen() {
       await saveScan(result);
       navigation.navigate("Result", { result });
     } catch (e) {
+      console.warn("scan error", e);
       Alert.alert("Scan failed", "Please try again.");
     } finally {
       setLoading(false);

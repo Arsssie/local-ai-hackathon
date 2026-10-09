@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { getHistory, clearHistory, HistoryItem } from "../utils/storage";
+import { isUnsure } from "../ml/confidence";
 import classes from "../data/classes.json";
 
 export default function HistoryScreen() {
@@ -26,10 +27,12 @@ export default function HistoryScreen() {
   const counts: Record<string, number> = {};
   let totalItems = 0;
   history.forEach((h) =>
-    h.detections.forEach((d) => {
-      counts[d.label] = (counts[d.label] ?? 0) + 1;
-      totalItems += 1;
-    }),
+    h.detections
+      .filter((d) => !isUnsure(d))
+      .forEach((d) => {
+        counts[d.label] = (counts[d.label] ?? 0) + 1;
+        totalItems += 1;
+      }),
   );
 
   function confirmClear() {

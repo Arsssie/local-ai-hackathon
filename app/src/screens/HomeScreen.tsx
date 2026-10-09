@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { getHistory, HistoryItem } from "../utils/storage";
+import { isUnsure } from "../ml/confidence";
 
 function isToday(ts: number) {
   return new Date(ts).toDateString() === new Date().toDateString();
@@ -25,7 +26,10 @@ export default function HomeScreen() {
   );
 
   const today = history.filter((h) => isToday(h.timestamp));
-  const itemsToday = today.reduce((sum, h) => sum + h.detections.length, 0);
+  const itemsToday = today.reduce(
+    (sum, h) => sum + h.detections.filter((d) => !isUnsure(d)).length,
+    0,
+  );
   const recent = history.slice(0, 3);
 
   return (
