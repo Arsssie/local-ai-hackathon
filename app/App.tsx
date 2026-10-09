@@ -4,23 +4,64 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
+import {
+  Home as HomeIcon,
+  ScanLine,
+  Trophy,
+} from "lucide-react-native";
 
 import LoginScreen from "./src/screens/LoginScreen";
 import ForgotPasswordScreen from "./src/screens/ForgotPasswordScreen";
 import HomeScreen from "./src/screens/HomeScreen";
 import ScanScreen from "./src/screens/ScanScreen";
+import LeaderboardScreen from "./src/screens/LeaderboardScreen";
 import HistoryScreen from "./src/screens/HistoryScreen";
 import ResultScreen from "./src/screens/ResultScreen";
+
+const DARK_GREEN = "#1B6045";
+const TAB_ICON_SIZE = 20; 
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 function Tabs() {
   return (
-    <Tab.Navigator screenOptions={{ tabBarActiveTintColor: "#16A34A" }}>
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Scan" component={ScanScreen} />
-      <Tab.Screen name="History" component={HistoryScreen} />
+    <Tab.Navigator
+      screenOptions={{
+        tabBarActiveTintColor: DARK_GREEN,
+        tabBarInactiveTintColor: "#9CA3AF",
+        tabBarLabelStyle: { fontSize: 11, fontWeight: "600" },
+      }}
+    >
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          headerShown: false, 
+          tabBarIcon: ({ color }) => (
+            <HomeIcon color={color} size={TAB_ICON_SIZE} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Scan"
+        component={ScanScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <ScanLine color={color} size={TAB_ICON_SIZE} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Leaderboard"
+        component={LeaderboardScreen}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <Trophy color={color} size={TAB_ICON_SIZE} />
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 }
@@ -53,6 +94,8 @@ export default function App() {
             options={{ headerShown: false }}
           />
           <Stack.Screen name="Result" component={ResultScreen} />
+          {/* History is no longer a tab; still reachable from the Home menu */}
+          <Stack.Screen name="History" component={HistoryScreen} />
         </Stack.Navigator>
       </NavigationContainer>
       <StatusBar style="auto" />

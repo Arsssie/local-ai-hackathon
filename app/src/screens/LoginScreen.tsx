@@ -106,7 +106,7 @@ export default function LoginScreen() {
 
         <TouchableOpacity style={styles.guestBtn} onPress={handleGuest}>
           <User size={20} color="#111827" />
-          <Text style={styles.altText}>Continue as Guest</Text>
+          <Text style={styles.altText}>Continue as Eco Buddy</Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
