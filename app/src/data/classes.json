@@ -32,5 +32,20 @@
     "category": "Biodegradable · Green bin",
     "color": "#16A34A",
     "tip": "Food scraps and peels can be composted. Keep them separate from dry waste."
+  },
+  "biodegradable": {
+    "category": "Biodegradable · Green bin",
+    "color": "#16A34A",
+    "tip": "Food scraps and peels can be composted. Keep them separate from dry waste."
+  },
+  "recyclable": {
+    "category": "Recyclable · Blue bin",
+    "color": "#2563EB",
+    "tip": "Rinse and keep it dry. Sell clean plastic, glass, metal and paper to a junk shop."
+  },
+  "non-biodegradable": {
+    "category": "Residual · Black bin",
+    "color": "#4B5563",
+    "tip": "Not commonly recycled. Bundle it dry and dispose of it as residual waste."
   }
 }

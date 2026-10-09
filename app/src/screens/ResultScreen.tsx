@@ -37,7 +37,7 @@ export default function ResultScreen() {
       )}
 
       {sure.map((d, i) => {
-        const info = (classes as any)[d.label];
+        const info = (classes as any)[d.category ?? d.label];
         return (
           <View
             key={i}

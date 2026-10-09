@@ -22,6 +22,10 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["onnxruntime-react-native", "expo-asset"]
+    "plugins": [
+      "onnxruntime-react-native",
+      "expo-asset",
+      "@react-native-google-signin/google-signin"
+    ]
   }
 }
