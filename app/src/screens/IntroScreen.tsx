@@ -8,7 +8,6 @@ import {
   StyleSheet,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-// Point this at the full logo (bin + leaves + GIGO) used on the Login screen
 import logo from "../../assets/Gigo-Logo.png";
 
 const DARK_GREEN = "#1B6045";
