@@ -5,6 +5,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 
+import LoginScreen from "./src/screens/LoginScreen";
+import ForgotPasswordScreen from "./src/screens/ForgotPasswordScreen";
 import HomeScreen from "./src/screens/HomeScreen";
 import ScanScreen from "./src/screens/ScanScreen";
 import HistoryScreen from "./src/screens/HistoryScreen";
@@ -23,17 +25,28 @@ function Tabs() {
   );
 }
 
-useEffect(() => {
-  try {
-    require("./src/ml/onnx").loadModel();
-  } catch {}
-}, []);
-
 export default function App() {
+  // Preload the on-device model (must live inside the component)
+  useEffect(() => {
+    try {
+      require("./src/ml/onnx").loadModel();
+    } catch {}
+  }, []);
+
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator initialRouteName="Login">
+          <Stack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ForgotPassword"
+            component={ForgotPasswordScreen}
+            options={{ title: "Reset password", headerShadowVisible: false }}
+          />
           <Stack.Screen
             name="Tabs"
             component={Tabs}
