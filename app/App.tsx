@@ -11,11 +11,18 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
+import { Home as HomeIcon, ScanLine, Trophy } from "lucide-react-native";
 
+import LoginScreen from "./src/screens/LoginScreen";
+import ForgotPasswordScreen from "./src/screens/ForgotPasswordScreen";
 import HomeScreen from "./src/screens/HomeScreen";
 import ScanScreen from "./src/screens/ScanScreen";
+import LeaderboardScreen from "./src/screens/LeaderboardScreen";
 import HistoryScreen from "./src/screens/HistoryScreen";
 import ResultScreen from "./src/screens/ResultScreen";
+
+const DARK_GREEN = "#1B6045";
+const TAB_ICON_SIZE = 20;
 import { initAi } from "./src/ai";
 
 const LLM_PATH =
@@ -26,15 +33,53 @@ const Stack = createNativeStackNavigator();
 
 function Tabs() {
   return (
-    <Tab.Navigator screenOptions={{ tabBarActiveTintColor: "#16A34A" }}>
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Scan" component={ScanScreen} />
-      <Tab.Screen name="History" component={HistoryScreen} />
+    <Tab.Navigator
+      screenOptions={{
+        tabBarActiveTintColor: DARK_GREEN,
+        tabBarInactiveTintColor: "#9CA3AF",
+        tabBarLabelStyle: { fontSize: 11, fontWeight: "600" },
+      }}
+    >
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <HomeIcon color={color} size={TAB_ICON_SIZE} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Scan"
+        component={ScanScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <ScanLine color={color} size={TAB_ICON_SIZE} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Leaderboard"
+        component={LeaderboardScreen}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <Trophy color={color} size={TAB_ICON_SIZE} />
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 }
 
 export default function App() {
+  // Preload the on-device model (must live inside the component)
+  useEffect(() => {
+    try {
+      require("./src/ml/onnx").loadModel();
+    } catch {}
+  }, []);
   const [status, setStatus] = useState("Starting...");
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -84,13 +129,25 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator initialRouteName="Login">
+          <Stack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ForgotPassword"
+            component={ForgotPasswordScreen}
+            options={{ title: "Reset password", headerShadowVisible: false }}
+          />
           <Stack.Screen
             name="Tabs"
             component={Tabs}
             options={{ headerShown: false }}
           />
           <Stack.Screen name="Result" component={ResultScreen} />
+          {/* History is no longer a tab; still reachable from the Home menu */}
+          <Stack.Screen name="History" component={HistoryScreen} />
         </Stack.Navigator>
       </NavigationContainer>
       <StatusBar style="auto" />
@@ -113,7 +170,12 @@ const styles = StyleSheet.create({
     color: "#166534",
     textAlign: "center",
   },
-  detail: { fontSize: 13, color: "#6B7280", marginTop: 8, textAlign: "center" },
+  detail: {
+    fontSize: 13,
+    color: "#6B7280",
+    marginTop: 8,
+    textAlign: "center",
+  },
   error: { fontSize: 18, fontWeight: "700", color: "#DC2626", marginTop: 16 },
   retry: {
     marginTop: 20,
