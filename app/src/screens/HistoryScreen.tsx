@@ -177,7 +177,7 @@ export default function HistoryScreen() {
             <Text style={styles.empty}>Go scan something!</Text>
             <TouchableOpacity
               style={styles.emptyBtn}
-              onPress={() => navigation.navigate("Scan")}
+              onPress={() => navigation.navigate("Tabs", { screen: "Scan" })}
               activeOpacity={0.85}
             >
               <ScanLine size={16} color="#fff" />

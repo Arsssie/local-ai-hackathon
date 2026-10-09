@@ -100,7 +100,7 @@ export default function LoginScreen() {
         </View>
 
         <TouchableOpacity style={styles.googleBtn} onPress={handleGoogle}>
-          <Globe size={20} color="#DB4437" />
+          <Globe size={20} color="#185811" />
           <Text style={styles.altText}>Continue with Google</Text>
         </TouchableOpacity>
 
