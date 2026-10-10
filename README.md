@@ -28,7 +28,6 @@ Tech Stack
 - Expo Image Picker for camera and gallery image selection
 - MongoDB
 - yolo11n and Llama-3.2-1B-Instruct-Q4_K_M.gguf AI Models
-- 
 - Local storage for saving scan history
 - Waste-detection module in the project's ML directory
 
