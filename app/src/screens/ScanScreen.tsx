@@ -3,10 +3,10 @@ import {
   View,
   Text,
   TouchableOpacity,
-  ActivityIndicator,
   ScrollView,
   StyleSheet,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -114,7 +114,9 @@ export default function ScanScreen() {
             <View style={styles.center}>
               <ActivityIndicator size="large" color={DARK_GREEN} />
               <Text style={styles.loadingTitle}>Analyzing…</Text>
-              <Text style={styles.loadingSub}>Detecting waste on your phone</Text>
+              <Text style={styles.loadingSub}>
+                Detecting waste on your phone
+              </Text>
             </View>
           ) : (
             <View style={styles.center}>

@@ -36,7 +36,7 @@ export default function AppHeader({ title, showMenu = true }: Props) {
     {
       label: "History",
       Icon: History,
-      onPress: () => navigation.navigate("History"), // adjust to your route name
+      onPress: () => navigation.navigate("History"),
     },
     {
       label: "Settings",
@@ -48,8 +48,12 @@ export default function AppHeader({ title, showMenu = true }: Props) {
     {
       label: "Log out",
       Icon: LogOut,
+      // reset the root stack (Home/Scan/Leaderboard live inside the "Tabs" navigator)
       onPress: () =>
-        navigation.reset({ index: 0, routes: [{ name: "Login" }] }), // adjust to your login route name
+        (navigation.getParent() ?? navigation).reset({
+          index: 0,
+          routes: [{ name: "Login" }],
+        }),
     },
   ];
 
